@@ -49,7 +49,7 @@ const page = () => {
     <table border='1'>
   <tbody >
     {media.map((val, i) => {
-      return <tr  key={i}><td title='Click To Play' onClick={() => sendCommand({ action: 'endpoint', command: 'play 1-1 ' + val.toString().replaceAll('\\', '/') })}>{val.toString().replaceAll('\\', '/')}</td></tr>
+      return <tr  key={i}><td title='Click To Play' onClick={() => sendCommand({ action: 'endpoint', command: 'play 1-1 ' + '"' + val.toString().replaceAll('\\', '/') + '"' })}>{val.toString().replaceAll('\\', '/')}</td></tr>
     })}
   </tbody>
 </table>
