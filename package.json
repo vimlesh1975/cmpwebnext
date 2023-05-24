@@ -9,11 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "casparcg-connection": "^5.1.0",
+    "directory-tree": "^3.5.1",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
     "next": "13.4.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "socket.io": "^4.6.1"
   }
 }
