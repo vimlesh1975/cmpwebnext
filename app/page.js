@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-const page = () => {
+const Page = () => {
   const [media, setMedia] = useState([])
   const [rowCommand, setRowCommand] = useState('play 1-1 red')
 
@@ -58,4 +58,4 @@ const page = () => {
   </>)
 }
 
-export default page
+export default Page
