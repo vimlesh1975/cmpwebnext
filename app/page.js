@@ -1,7 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 const Page = () => {
-  const [media, setMedia] = useState([])
+  const dispatch = useDispatch()
+  const media = useSelector(state => state.mediaReducer.media)
   const [rowCommand, setRowCommand] = useState('play 1-1 red')
 
   const sendCommand = async (strObject) => {
@@ -22,7 +24,7 @@ const Page = () => {
       },
     }).then(val => {
       const dd = val.json().then(val1 => {
-        setMedia(val1.data)
+        dispatch({ type: 'CHANGE_MEDIA', payload: val1.data})
       })
 
     })
