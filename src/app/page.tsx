@@ -48,9 +48,9 @@ const Page = () => {
 
     </div>
     <div style={{maxHeight:800,maxWidth:300, overflow:'auto'}}>
-    <table border='1'>
+    <table border={1}>
   <tbody >
-    {media.map((val, i) => {
+    {media.map((val:any, i:Number) => {
       return <tr  key={i}><td title='Click To Play' onClick={() => sendCommand({ action: 'endpoint', command: 'play 1-1 ' + '"' + val.toString().replaceAll('\\', '/') + '"' })}>{val.toString().replaceAll('\\', '/')}</td></tr>
     })}
   </tbody>
