@@ -2,7 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit"
 
 const initialMedia = { media: [] };
-const mediaReducer = (state = initialMedia, action) => {
+const mediaReducer = (state = initialMedia, action:{type:string, payload:any}) => {
     switch (action.type) {
         case 'CHANGE_MEDIA':
             return {
@@ -12,9 +12,6 @@ const mediaReducer = (state = initialMedia, action) => {
         default: return state
     }
 }
-
-
-
 
 export const store=configureStore({
     reducer: {mediaReducer},
