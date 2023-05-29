@@ -1,10 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import io from "socket.io-client";
+
 const Page = () => {
   const dispatch = useDispatch()
   const media = useSelector((state:any) => state.mediaReducer.media)
   const [rowCommand, setRowCommand] = useState('play 1-1 red')
+  const [oscMesaage, setOscMesaage] = useState('')
 
   const sendCommand = async (strObject: Record<string, any>) => {
     fetch("./api/", {
@@ -37,9 +40,24 @@ const Page = () => {
     };
   }, [])
 
+  useEffect(() => {
+    const socket = io(); // Connect to the socket.io server
+    // Event listeners for socket events
+    socket.on("FromAPI", (data) => {
+      // Handle the event data
+      // console.log(data)
+      setOscMesaage((data))
+    });
+    // Clean up the socket connection
+    return () => {
+      socket.disconnect();
+    };
+  }, [])
+  
+
   return (<>
-    <h1>CMPWebNext</h1>
-    <button className='text-lg bg-red-500' onClick={() => fetch('./api/?connect=true')}>Connect</button>
+    <h1>CMPWebNext</h1> 
+    <button className='rounded-full' onClick={() => fetch('./api/?connect=true')}>Connect</button>
     <button onClick={() => fetch('./api/?connect=false')}>dis Connect</button>
     <button onClick={() => getMedia({ action: 'getmedia' })}>get all files</button>
     <div>
@@ -47,6 +65,7 @@ const Page = () => {
     <button onClick={() => sendCommand({ action: 'endpoint', command: rowCommand })}>Send Command</button>
 
     </div>
+    <div className="countdown text-xl">{oscMesaage}</div>
     <div style={{maxHeight:800,maxWidth:300, overflow:'auto'}}>
     <table border={1}>
   <tbody >
@@ -55,6 +74,9 @@ const Page = () => {
     })}
   </tbody>
 </table>
+</div>
+<div>
+  
 </div>
 
   </>)
