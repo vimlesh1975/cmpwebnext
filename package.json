@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon src/app/server",
+    "dev": "node src/app/server",
+    "dev2": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -23,6 +24,7 @@
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
+    "http-proxy-middleware": "^2.0.6",
     "next": "13.4.4",
     "nodemon": "^2.0.22",
     "osc": "^2.4.4",

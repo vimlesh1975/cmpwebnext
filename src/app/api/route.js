@@ -7,7 +7,11 @@ var templatePath;
 var logPath;
 
 var media = [];
-
+// const ccgsocket = new CasparCGSocket('localhost', 3000)
+// ccgsocket.emit('FromAPI', 'ggggg')
+// ccgsocket.connect()
+// ccgsocket.emit('ddddddd')
+// console.log(ccgsocket)
 const refreshMedia = () => {
   aa.getCasparCGPaths().then((aa1) => {
       mediaPath = aa1.absoluteMedia;
@@ -26,7 +30,7 @@ const refreshMedia = () => {
 }
 
 var aa;
-export const connect = async () => {
+export const connect =  () => {
   aa = new CasparCG("127.0.0.1", 5250)
   aa.queueMode = Options.QueueMode.SEQUENTIAL;
 
@@ -45,6 +49,8 @@ export const connect = async () => {
     // io.emit('connectionStatus', (aa.connected).toString())
   }
 }
+
+
 // GET method
 export function GET(req, res) {
   // Handle GET request

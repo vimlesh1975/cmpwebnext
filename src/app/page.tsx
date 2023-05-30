@@ -36,12 +36,12 @@ const Page = () => {
     document.title='CMPWebNext'
     fetch('./api/?connect=true');
     return () => {
-       fetch('./api/?connect=false');
+      //  fetch('./api/?connect=false');
     };
   }, [])
 
   useEffect(() => {
-    const socket = io(); // Connect to the socket.io server
+    const socket = io(':4000'); // Connect to the socket.io server
     // Event listeners for socket events
     socket.on("FromAPI", (data) => {
       // Handle the event data
