@@ -56,7 +56,7 @@ const Page = () => {
   
 
   return (<>
-    <h1>CMPWebNext</h1> 
+    <h1>CMPWebNext2222222</h1> 
     <button className='rounded-full' onClick={() => fetch('./api/?connect=true')}>Connect</button>
     <button onClick={() => fetch('./api/?connect=false')}>dis Connect</button>
     <button onClick={() => getMedia({ action: 'getmedia' })}>get all files</button>

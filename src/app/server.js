@@ -49,7 +49,7 @@ nextApp.prepare().then(() => {
   io.on('connection', (socket) => {
    // Forward the HMR WebSocket connection to the Next.js server
     if (socket.handshake.headers.referer.includes('/_next/webpack-hmr')) {
-      socket.emit('forward', socket.handshake);
+      io.emit('forward', socket.handshake);
     }
     console.log("New WebSocket client connected");
     socket.emit('connectionStatus', 'true');
