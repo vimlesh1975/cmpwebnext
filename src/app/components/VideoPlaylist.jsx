@@ -20,7 +20,9 @@ const VideoPlaylist = () => {
     const [currentFileinlist, setCurrentFileinlist] = useState();
     const [filename, setfilename] = useState('amb');
     const [searchText, setSearchText] = useState('');
-    const [switched,setSwitched]=useState(false)
+    const [switched,setSwitched]=useState(false);
+    const [playlistMode,setPlaylistMode]=useState(true);
+
 
     const refreshMedia = async () => {
         fetch("./api/", {
@@ -90,12 +92,15 @@ const VideoPlaylist = () => {
     }
 
     const swithtoNext=()=>{
-        if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <25){
-            const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
-            next('play', newfile);
-            setSwitched(true);
-            resetSwitch()
-        } 
+        if (playlistMode){
+            if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <25){
+                const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
+                next('play', newfile);
+                setSwitched(true);
+                resetSwitch()
+            } 
+        }
+       
     }
 
     const resetSwitch=()=>{
@@ -149,7 +154,7 @@ const VideoPlaylist = () => {
         </div>
 
         <div>
-            <b>Playlist</b>
+            <b>Playlist Mode<input type='checkbox' checked={playlistMode} onChange={()=>setPlaylistMode(!playlistMode) }/></b>{playlistMode.toString()}
              {/* {(parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25} */}
              <br />
             <button onClick={() => {
