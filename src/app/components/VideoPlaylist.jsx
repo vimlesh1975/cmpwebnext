@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react'
-import { endpoint,  videoLayers } from './common'
+import React, { useState, useEffect } from 'react'
+import { endpoint, videoLayers } from './common'
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -11,6 +11,7 @@ import { FaPlay, FaStop } from "react-icons/fa";
 const layerNumberList = videoLayers
 
 const VideoPlaylist = () => {
+    const oscMessage = useSelector(state => state.OscMessagedReducer.OscMessage);
     const [layerNumber, setLayerNumber] = useState(1);
     const dispatch = useDispatch()
     const media = useSelector(state => state.mediaReducer.media)
@@ -19,6 +20,8 @@ const VideoPlaylist = () => {
     const [currentFileinlist, setCurrentFileinlist] = useState();
     const [filename, setfilename] = useState('amb');
     const [searchText, setSearchText] = useState('');
+    const [switched,setSwitched]=useState(false)
+
     const refreshMedia = async () => {
         fetch("./api/", {
             method: "POST",
@@ -78,13 +81,37 @@ const VideoPlaylist = () => {
     const scrub = val => {
         endpoint(`call 1-1 seek ${val}`)
     }
-   
-    const next=(command, newfile)=>{
+
+    const next = (command, newfile) => {
         const newfilename = (playlist[newfile].fileName).replaceAll('\\', '/').split('.')[0];
         setfilename(newfilename);
         dispatch({ type: 'CHANGE_CURRENT_FILE', payload: newfile });
         endpoint(`${command} 1-1 ${newfilename}`)
     }
+
+    const swithtoNext=()=>{
+        if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <20){
+            const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
+            next('play', newfile);
+            setSwitched(true);
+            resetSwitch()
+        } 
+    }
+
+    const resetSwitch=()=>{
+        setTimeout(() => {
+            setSwitched(false);
+          }, 4000);
+    }
+
+    useEffect(() => {
+        if (!switched){
+            swithtoNext()
+        }
+        return () => {
+            // clearInterval(timer);
+        }
+      }, [oscMessage]);
     window.chNumber = 1;
     return (<div style={{ display: 'flex' }}>
         <div style={{ border: '1px solid black' }}>
@@ -122,22 +149,24 @@ const VideoPlaylist = () => {
         </div>
 
         <div>
-            <b>Playlist</b><br />
+            <b>Playlist</b>
+             {/* {(parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25} */}
+             <br />
             <button onClick={() => {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
-                next('load',newfile );
+                next('load', newfile);
             }}>Next Cue</button>
             <button onClick={() => {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
-                next('play',newfile );
+                next('play', newfile);
             }}>Next Play</button>
-              <button onClick={() => {
+            <button onClick={() => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
-                next('load',newfile );
+                next('load', newfile);
             }}>Previous Cue</button>
             <button onClick={() => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
-                next('play',newfile );
+                next('play', newfile);
             }}>Previous Play</button>
             <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} />
             <div style={{ height: 850, width: 470, overflow: 'scroll', border: '1px solid black' }}>

@@ -1,5 +1,6 @@
 import React, {useEffect, useState } from 'react'
 import io from "socket.io-client";
+import { useDispatch, useSelector } from 'react-redux'
 
 const sectohmsm = (totalSeconds) => {
     if (totalSeconds<0){
@@ -13,7 +14,8 @@ const sectohmsm = (totalSeconds) => {
     return hmsms; // Output: "0:20:34.560"
   };
 const OscMessages = () => {
-  const [oscMessage, setOscMessage] = useState(null)
+  const oscMessage = useSelector(state => state.OscMessagedReducer.OscMessage);
+  const dispatch = useDispatch()
 
     useEffect(() => {
         const socket = io(':4000'); // Connect to the socket.io server
@@ -21,7 +23,9 @@ const OscMessages = () => {
         socket.on("FromAPI", (data) => {
           // Handle the event data
           // console.log(data)
-          setOscMessage((data))
+          // setOscMessage((data))
+          dispatch({ type: 'CHANGE_OSCMESSAGES', payload: data })
+
         });
         // Clean up the socket connection
         return () => {

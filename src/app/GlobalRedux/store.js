@@ -297,8 +297,18 @@ const clientIdReducer = (state = initialClientId, action) => {
         default: return state
     }
 }
-
+const initialOscMessage = { OscMessage: null };
+const OscMessagedReducer = (state = initialOscMessage, action) => {
+    switch (action.type) {
+        case 'CHANGE_OSCMESSAGES':
+            return {
+                ...state,
+                OscMessage: action.payload
+            }
+        default: return state
+    }
+}
 
 export const store=configureStore({
-    reducer: {mediaReducer, playlistReducer, currentFileReducer},
+    reducer: {mediaReducer, playlistReducer, currentFileReducer, OscMessagedReducer},
 })
