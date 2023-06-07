@@ -26,7 +26,7 @@ const nextHandler = nextApp.getRequestHandler();
 // Prepare the Next.js application
 nextApp.prepare().then(() => {
   // Attach the custom server middleware to the Next.js server
-  // app.use('/_next/__webpack-hmr', createProxyMiddleware({ target: 'http://localhost:3000', ws: true }));
+  app.use('/_next/__webpack-hmr', createProxyMiddleware('/_next/__webpack-hmr',{ target: 'ws://localhost:3000', ws: true }));
 
   app.get('*', (req, res) => nextHandler(req, res));
   app.post('*', (req, res) => nextHandler(req, res));
@@ -69,14 +69,19 @@ nextApp.prepare().then(() => {
 
   udpPort.on("message", function (oscMessage, info) {
     if (oscMessage.address === '/channel/1/stage/layer/1/file/time') {
-      io.emit("FromAPI", sectohmsm(parseFloat(oscMessage.args[1].value - oscMessage.args[0].value).toFixed(2)));
+      io.emit("FromAPI",oscMessage);
+      // io.emit("FromAPI", sectohmsm(parseFloat(oscMessage.args[1].value - oscMessage.args[0].value).toFixed(2)));
     } else if (oscMessage.address === '/channel/1/stage/layer/1/foreground/file/time') {
-      io.emit("FromAPI", sectohmsm(parseFloat(oscMessage.args[1].value - oscMessage.args[0].value).toFixed(2)));
+      // io.emit("FromAPI", sectohmsm(parseFloat(oscMessage.args[1].value - oscMessage.args[0].value).toFixed(2)));
+      io.emit("FromAPI",oscMessage);
     }
   });
 });
 
 const sectohmsm = (totalSeconds) => {
+  if (totalSeconds<0){
+    totalSeconds=0
+  }
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = Math.floor(totalSeconds % 60);

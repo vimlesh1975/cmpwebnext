@@ -70,7 +70,7 @@ export async function POST(req, res) {
     return new Response('')
   }
   if (body.action==='getmedia'){
-    // refreshMedia();
+    refreshMedia();
     
       return  NextResponse.json({data:media})
  

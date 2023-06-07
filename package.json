@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node src/app/server",
+    "dev": "nodemon src/app/server",
     "dev2": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,6 +15,7 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "bufferutil": "^4.0.7",
     "casparcg-connection": "^5.1.0",
@@ -25,12 +26,14 @@
     "fs": "^0.0.1-security",
     "http": "^0.0.1-security",
     "http-proxy-middleware": "^2.0.6",
-    "next": "13.4.4",
+    "next": "^13.4.5-canary.6",
     "nodemon": "^2.0.22",
     "osc": "^2.4.4",
     "postcss": "8.4.23",
     "react": "18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
+    "react-icons": "^4.9.0",
     "react-redux": "^8.0.5",
     "socket.io": "^4.6.1",
     "socket.io-client": "^4.6.1",
@@ -38,6 +41,7 @@
     "twin.macro": "^3.3.1",
     "typescript": "5.0.4",
     "utf-8-validate": "^5.0.10",
+    "uuidv4": "^6.2.13",
     "ws": "^8.13.0"
   }
 }
