@@ -86,11 +86,11 @@ const VideoPlaylist = () => {
         const newfilename = (playlist[newfile].fileName).replaceAll('\\', '/').split('.')[0];
         setfilename(newfilename);
         dispatch({ type: 'CHANGE_CURRENT_FILE', payload: newfile });
-        endpoint(`${command} 1-1 ${newfilename}`)
+        endpoint(`${command} 1-1 "${newfilename}"`)
     }
 
     const swithtoNext=()=>{
-        if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <20){
+        if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <25){
             const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
             next('play', newfile);
             setSwitched(true);
