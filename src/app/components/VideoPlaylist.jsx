@@ -80,7 +80,8 @@ const VideoPlaylist = () => {
         setfilename(((e.target.innerText).replaceAll('\\', '/')).split('.')[0]);
     }
     const scrub = val => {
-        endpoint(`call 1-1 seek ${val}`)
+        // endpoint(`pause 1-1`)
+        endpoint(`call 1-1 seek ${2*val}`)
     }
 
     const next = (command, newfile) => {
@@ -190,7 +191,7 @@ const VideoPlaylist = () => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
                 next('play', newfile);
             }}>Previous Play</button>
-            <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} max={(oscMessage?.args[1]?.value * 25).toFixed(2)} value={(oscMessage?.args[0]?.value * 25).toFixed(2)}/>
+            <input style={{ width: 400 }} onMouseDown={()=>endpoint(`pause 1-1`)} type='range' onChange={e => scrub(e.target.value)} max={(oscMessage?.args[1]?.value * 25).toFixed(2)} value={(oscMessage?.args[0]?.value * 25).toFixed(2)}/>
             <div style={{ height: 850, width: 470, overflow: 'scroll', border: '1px solid black' }}>
 
                 <DragDropContext onDragEnd={onDragEnd}>
