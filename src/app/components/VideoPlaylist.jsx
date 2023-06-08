@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react'
-import { endpoint,  videoLayers } from './common'
+import React, { useState, useEffect } from 'react'
+import { endpoint, videoLayers } from './common'
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -11,6 +11,7 @@ import { FaPlay, FaStop } from "react-icons/fa";
 const layerNumberList = videoLayers
 
 const VideoPlaylist = () => {
+    const oscMessage = useSelector(state => state.OscMessagedReducer.OscMessage);
     const [layerNumber, setLayerNumber] = useState(1);
     const dispatch = useDispatch()
     const media = useSelector(state => state.mediaReducer.media)
@@ -19,6 +20,10 @@ const VideoPlaylist = () => {
     const [currentFileinlist, setCurrentFileinlist] = useState();
     const [filename, setfilename] = useState('amb');
     const [searchText, setSearchText] = useState('');
+    const [switched, setSwitched] = useState(false);
+    const [playlistMode, setPlaylistMode] = useState(true);
+
+
     const refreshMedia = async () => {
         fetch("./api/", {
             method: "POST",
@@ -78,12 +83,52 @@ const VideoPlaylist = () => {
     const scrub = val => {
         endpoint(`call 1-1 seek ${val}`)
     }
-   
-    const next=(command, newfile)=>{
+
+    const next = (command, newfile) => {
         const newfilename = (playlist[newfile].fileName).replaceAll('\\', '/').split('.')[0];
         setfilename(newfilename);
         dispatch({ type: 'CHANGE_CURRENT_FILE', payload: newfile });
-        endpoint(`${command} 1-1 ${newfilename}`)
+        endpoint(`${command} 1-1 "${newfilename}"`)
+    }
+
+    const swithtoNext = () => {
+        if (playlistMode) {
+            if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2)) * 25 < 25) {
+                const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
+                next('play', newfile);
+                setSwitched(true);
+                resetSwitch()
+            }
+        }
+
+    }
+
+    const resetSwitch = () => {
+        setTimeout(() => {
+            setSwitched(false);
+        }, 4000);
+    }
+
+    useEffect(() => {
+        if (!switched) {
+            swithtoNext()
+        }
+        return () => {
+            // clearInterval(timer);
+        }
+    }, [oscMessage]);
+
+    const filenamewithoutExtension = (filename) => {
+        return filename.replaceAll('\\', '/').split('.')[0]
+    }
+
+    const startPlaylist = () => {
+        endpoint(`play 1-1 "${filenamewithoutExtension(playlist[currentFile].fileName)}"`)
+        setPlaylistMode(true)
+    }
+    const stopPlaylist = () => {
+        endpoint(`stop 1-1`)
+        setPlaylistMode(false)
     }
     window.chNumber = 1;
     return (<div style={{ display: 'flex' }}>
@@ -98,7 +143,10 @@ const VideoPlaylist = () => {
                 <button className='stopButton' onClick={() => endpoint(`pause ${window.chNumber}-${layerNumber}`)}>Pause</button>
                 <button className='stopButton' onClick={() => endpoint(`resume ${window.chNumber}-${layerNumber}`)}>Resume</button>
                 <button className='stopButton' onClick={() => endpoint(`stop ${window.chNumber}-${layerNumber}`)}>Stop</button>
-                <button className='palyButton' onClick={() => endpoint(`play ${window.chNumber}-${layerNumber} "${filename}" loop`)}>Loop Play</button>
+                <button className='palyButton' onClick={() => {
+                    endpoint(`play ${window.chNumber}-${layerNumber} "${filename}" loop`);
+                    setPlaylistMode(false);
+                }}>Loop Play</button>
 
             </div>
             <button onClick={refreshMedia}>Refresh Media</button>{searchedMedia.length} files<br />
@@ -122,24 +170,28 @@ const VideoPlaylist = () => {
         </div>
 
         <div>
-            <b>Playlist</b><br />
+            <b>Playlist Mode<input type='checkbox' checked={playlistMode} onChange={() => setPlaylistMode(!playlistMode)} /></b>{playlistMode.toString()}
+            <button onClick={startPlaylist}>Start Playlist</button>
+            <button onClick={stopPlaylist}>Stop Playlist</button>
+
+            <br />
             <button onClick={() => {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
-                next('load',newfile );
+                next('load', newfile);
             }}>Next Cue</button>
             <button onClick={() => {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
-                next('play',newfile );
+                next('play', newfile);
             }}>Next Play</button>
-              <button onClick={() => {
+            <button onClick={() => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
-                next('load',newfile );
+                next('load', newfile);
             }}>Previous Cue</button>
             <button onClick={() => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
-                next('play',newfile );
+                next('play', newfile);
             }}>Previous Play</button>
-            <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} />
+            <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} max={(oscMessage?.args[1]?.value * 25).toFixed(2)} value={(oscMessage?.args[0]?.value * 25).toFixed(2)}/>
             <div style={{ height: 850, width: 470, overflow: 'scroll', border: '1px solid black' }}>
 
                 <DragDropContext onDragEnd={onDragEnd}>
@@ -174,8 +226,16 @@ const VideoPlaylist = () => {
 
                                                                 }} key1={i} key2={'vimlesh'}  >{val.fileName}
                                                             </td>
-                                                            <td><button key1={i} onClick={() => endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`)} >Cue</button></td>
-                                                            <td><button key1={i} onClick={() => endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`)} ><FaPlay /></button></td>
+                                                            <td><button key1={i} onClick={() => {
+                                                                endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
+                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
+                                                            }} >Cue</button></td>
+                                                            <td><button key1={i} onClick={() => {
+                                                                endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
+                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
+                                                            }} ><FaPlay /></button></td>
                                                             <td><button key1={i} onClick={() => endpoint(`Stop ${window.chNumber}-${layerNumber}`)} ><FaStop /></button></td>
                                                             <td><button key1={i} onClick={(e) => deletePage(e)} ><VscTrash style={{ pointerEvents: 'none' }} /></button></td>
 
