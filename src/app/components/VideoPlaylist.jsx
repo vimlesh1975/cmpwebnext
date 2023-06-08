@@ -20,8 +20,8 @@ const VideoPlaylist = () => {
     const [currentFileinlist, setCurrentFileinlist] = useState();
     const [filename, setfilename] = useState('amb');
     const [searchText, setSearchText] = useState('');
-    const [switched,setSwitched]=useState(false);
-    const [playlistMode,setPlaylistMode]=useState(true);
+    const [switched, setSwitched] = useState(false);
+    const [playlistMode, setPlaylistMode] = useState(true);
 
 
     const refreshMedia = async () => {
@@ -91,32 +91,45 @@ const VideoPlaylist = () => {
         endpoint(`${command} 1-1 "${newfilename}"`)
     }
 
-    const swithtoNext=()=>{
-        if (playlistMode){
-            if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25 <25){
+    const swithtoNext = () => {
+        if (playlistMode) {
+            if ((parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2)) * 25 < 25) {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
                 next('play', newfile);
                 setSwitched(true);
                 resetSwitch()
-            } 
+            }
         }
-       
+
     }
 
-    const resetSwitch=()=>{
+    const resetSwitch = () => {
         setTimeout(() => {
             setSwitched(false);
-          }, 4000);
+        }, 4000);
     }
 
     useEffect(() => {
-        if (!switched){
+        if (!switched) {
             swithtoNext()
         }
         return () => {
             // clearInterval(timer);
         }
-      }, [oscMessage]);
+    }, [oscMessage]);
+
+    const filenamewithoutExtension = (filename) => {
+        return filename.replaceAll('\\', '/').split('.')[0]
+    }
+
+    const startPlaylist = () => {
+        endpoint(`play 1-1 "${filenamewithoutExtension(playlist[currentFile].fileName)}"`)
+        setPlaylistMode(true)
+    }
+    const stopPlaylist = () => {
+        endpoint(`stop 1-1`)
+        setPlaylistMode(false)
+    }
     window.chNumber = 1;
     return (<div style={{ display: 'flex' }}>
         <div style={{ border: '1px solid black' }}>
@@ -157,9 +170,11 @@ const VideoPlaylist = () => {
         </div>
 
         <div>
-            <b>Playlist Mode<input type='checkbox' checked={playlistMode} onChange={()=>setPlaylistMode(!playlistMode) }/></b>{playlistMode.toString()}
-             {/* {(parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))*25} */}
-             <br />
+            <b>Playlist Mode<input type='checkbox' checked={playlistMode} onChange={() => setPlaylistMode(!playlistMode)} /></b>{playlistMode.toString()}
+            <button onClick={startPlaylist}>Start Playlist</button>
+            <button onClick={stopPlaylist}>Stop Playlist</button>
+
+            <br />
             <button onClick={() => {
                 const newfile = (playlist.length - 1 === currentFile) ? 0 : currentFile + 1;
                 next('load', newfile);
@@ -176,7 +191,7 @@ const VideoPlaylist = () => {
                 const newfile = (currentFile !== 0) ? currentFile - 1 : playlist.length - 1;
                 next('play', newfile);
             }}>Previous Play</button>
-            <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} />
+            <input style={{ width: 400 }} type='range' onChange={e => scrub(e.target.value)} max={(oscMessage?.args[1]?.value * 25).toFixed(2)} value={(oscMessage?.args[0]?.value * 25).toFixed(2)}/>
             <div style={{ height: 850, width: 470, overflow: 'scroll', border: '1px solid black' }}>
 
                 <DragDropContext onDragEnd={onDragEnd}>
@@ -214,11 +229,13 @@ const VideoPlaylist = () => {
                                                             <td><button key1={i} onClick={() => {
                                                                 endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
+                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
                                                             }} >Cue</button></td>
                                                             <td><button key1={i} onClick={() => {
                                                                 endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
-                                                                }} ><FaPlay /></button></td>
+                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
+                                                            }} ><FaPlay /></button></td>
                                                             <td><button key1={i} onClick={() => endpoint(`Stop ${window.chNumber}-${layerNumber}`)} ><FaStop /></button></td>
                                                             <td><button key1={i} onClick={(e) => deletePage(e)} ><VscTrash style={{ pointerEvents: 'none' }} /></button></td>
 
