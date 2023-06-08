@@ -14,6 +14,7 @@ const sectohmsm = (totalSeconds) => {
     return hmsms; // Output: "0:20:34.560"
   };
 const OscMessages = () => {
+  // const [oscMessage,setOscMessage ]=useState('null')
   const oscMessage = useSelector(state => state.OscMessagedReducer.OscMessage);
   const dispatch = useDispatch()
 
@@ -34,7 +35,7 @@ const OscMessages = () => {
       }, [])
   return (
     <div>
-      {sectohmsm(parseFloat(oscMessage?.args[1]?.value - oscMessage?.args[0]?.value)?.toFixed(2))}
+      {sectohmsm(parseFloat(oscMessage?.args?.[1]?.value - oscMessage?.args?.[0]?.value)?.toFixed(2))}
 
     </div>
   )

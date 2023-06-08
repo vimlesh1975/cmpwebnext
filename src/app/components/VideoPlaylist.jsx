@@ -1,14 +1,13 @@
 
 import React, { useState, useEffect } from 'react'
-import { endpoint, videoLayers } from './common'
-import { v4 as uuidv4 } from 'uuid';
+import { endpoint } from './common'
 import { useDispatch, useSelector } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { VscTrash, VscMove } from "react-icons/vsc";
 import { FaPlay, FaStop } from "react-icons/fa";
 
 
-const layerNumberList = videoLayers
+// const layerNumberList = videoLayers
 
 const VideoPlaylist = () => {
     const oscMessage = useSelector(state => state.OscMessagedReducer.OscMessage);
@@ -133,9 +132,9 @@ const VideoPlaylist = () => {
     window.chNumber = 1;
     return (<div style={{ display: 'flex' }}>
         <div style={{ border: '1px solid black' }}>
-            <b>Layer: </b>  <select onChange={e => changelayerNumber(e)} value={layerNumber}>
+            {/* <b>Layer: </b>  <select onChange={e => changelayerNumber(e)} value={layerNumber}>
                 {layerNumberList.map((val) => { return <option key={uuidv4()} value={val}>{val}</option> })}
-            </select><br />
+            </select><br /> */}
             <div style={{ width: 400 }}>
                 File: <input style={{ width: 320 }} onChange={(e) => setfilename(e.target.value)} value={filename}></input>
                 <br /> <button className='palyButton' onClick={() => endpoint(`load ${window.chNumber}-${layerNumber} "${filename}"`)}>Cue</button>
@@ -155,7 +154,7 @@ const VideoPlaylist = () => {
                 <table border='1' >
                     <tbody>
                         {searchedMedia.map((val, i) => {
-                            return <tr key={uuidv4()}><td
+                            return <tr key={i}><td
                                 style={{ backgroundColor: currentFileinlist === i ? 'green' : 'white', color: currentFileinlist === i ? 'white' : 'black' }}
                                 onDoubleClick={e => onDoubleClickMediafile(e)}
                                 onClick={(e) => {
