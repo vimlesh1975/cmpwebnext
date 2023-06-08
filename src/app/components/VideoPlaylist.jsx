@@ -130,7 +130,10 @@ const VideoPlaylist = () => {
                 <button className='stopButton' onClick={() => endpoint(`pause ${window.chNumber}-${layerNumber}`)}>Pause</button>
                 <button className='stopButton' onClick={() => endpoint(`resume ${window.chNumber}-${layerNumber}`)}>Resume</button>
                 <button className='stopButton' onClick={() => endpoint(`stop ${window.chNumber}-${layerNumber}`)}>Stop</button>
-                <button className='palyButton' onClick={() => endpoint(`play ${window.chNumber}-${layerNumber} "${filename}" loop`)}>Loop Play</button>
+                <button className='palyButton' onClick={() => {
+                    endpoint(`play ${window.chNumber}-${layerNumber} "${filename}" loop`);
+                    setPlaylistMode(false);
+                }}>Loop Play</button>
 
             </div>
             <button onClick={refreshMedia}>Refresh Media</button>{searchedMedia.length} files<br />
@@ -208,8 +211,14 @@ const VideoPlaylist = () => {
 
                                                                 }} key1={i} key2={'vimlesh'}  >{val.fileName}
                                                             </td>
-                                                            <td><button key1={i} onClick={() => endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`)} >Cue</button></td>
-                                                            <td><button key1={i} onClick={() => endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`)} ><FaPlay /></button></td>
+                                                            <td><button key1={i} onClick={() => {
+                                                                endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
+                                                            }} >Cue</button></td>
+                                                            <td><button key1={i} onClick={() => {
+                                                                endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
+                                                                }} ><FaPlay /></button></td>
                                                             <td><button key1={i} onClick={() => endpoint(`Stop ${window.chNumber}-${layerNumber}`)} ><FaStop /></button></td>
                                                             <td><button key1={i} onClick={(e) => deletePage(e)} ><VscTrash style={{ pointerEvents: 'none' }} /></button></td>
 
