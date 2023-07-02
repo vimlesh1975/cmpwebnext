@@ -33,7 +33,7 @@ const io = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
         });
         udpPort.open();
 
-        udpPort.on("message", function (oscMessage, info) {
+        udpPort.on("message", function (oscMessage:any, info:any) {
             if (oscMessage.address === '/channel/1/stage/layer/1/file/time') {
                 io.emit("FromAPI", oscMessage);
                 // io.emit("FromAPI", sectohmsm(parseFloat(oscMessage.args[1].value - oscMessage.args[0].value).toFixed(2)));
