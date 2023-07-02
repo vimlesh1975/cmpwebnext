@@ -18,7 +18,19 @@ const OscMessages = () => {
   const dispatch = useDispatch()
 
     useEffect(() => {
-        const socket = io(':4000'); // Connect to the socket.io server
+        // const socket = new io(); // Connect to the socket.io server
+
+        const socket = new (io)('http://localhost:3000', {
+          path: "/api/socket/io",
+          addTrailingSlash: false,
+        });
+        console.log(socket)
+          // log socket connection
+    socket.on("connect", () => {
+      console.log("SOCKET CONNECTED!", socket.id);
+      // setConnected(true);
+    });
+
         // Event listeners for socket events
         socket.on("FromAPI", (data) => {
           // Handle the event data

@@ -30,7 +30,7 @@ const Page = () => {
   }, [])
 
   return (<>
-    <h1>CMPWebNext</h1>
+    <h1>CMPWebNext 1</h1>
     <button className='rounded-full' onClick={() => fetch('./api/?connect=true')}>Connect</button>
     <button onClick={() => fetch('./api/?connect=false')}>dis Connect</button>
     <button onClick={() => endpoint('clear 1')}>Stop Channel</button>
