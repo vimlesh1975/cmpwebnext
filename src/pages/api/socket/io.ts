@@ -9,7 +9,7 @@ export const config = {
     },
 };
 
-const io = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
+const io1 = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
     if (!res.socket.server.io) {
         const path = "/api/socket/io";
         console.log(`New Socket.io server... to ${path}`);
@@ -49,4 +49,4 @@ const io = async (req: NextApiRequest, res: NextApiResponseServerIO) => {
 
 
 
-export default io;
+export default io1;

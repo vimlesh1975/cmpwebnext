@@ -23,14 +23,14 @@ const Page = () => {
   useEffect(() => {
     document.title = 'CMPWebNext'
     fetch('./api/?connect=true').then(refreshMedia());
-    
     return () => {
       //  fetch('./api/?connect=false');
     };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (<>
-    <h1>CMPWebNext 1</h1>
+    <h1>CMPWebNext555 3222</h1>
     <button className='rounded-full' onClick={() => fetch('./api/?connect=true')}>Connect</button>
     <button onClick={() => fetch('./api/?connect=false')}>dis Connect</button>
     <button onClick={() => endpoint('clear 1')}>Stop Channel</button>

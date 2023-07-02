@@ -1,4 +1,4 @@
-
+'use client'
 import React, { useState, useEffect } from 'react'
 import { endpoint, videoLayers } from './common'
 import { v4 as uuidv4 } from 'uuid';
@@ -116,6 +116,7 @@ const VideoPlaylist = () => {
         return () => {
             // clearInterval(timer);
         }
+          // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [oscMessage]);
 
     const filenamewithoutExtension = (filename) => {
@@ -130,7 +131,7 @@ const VideoPlaylist = () => {
         endpoint(`stop 1-1`)
         setPlaylistMode(false)
     }
-    window.chNumber = 1;
+    // 1 = 1;
     return (<div style={{ display: 'flex' }}>
         <div style={{ border: '1px solid black' }}>
             <b>Layer: </b>  <select onChange={e => changelayerNumber(e)} value={layerNumber}>
@@ -138,13 +139,13 @@ const VideoPlaylist = () => {
             </select><br />
             <div style={{ width: 400 }}>
                 File: <input style={{ width: 320 }} onChange={(e) => setfilename(e.target.value)} value={filename}></input>
-                <br /> <button className='palyButton' onClick={() => endpoint(`load ${window.chNumber}-${layerNumber} "${filename}"`)}>Cue</button>
-                <button className='palyButton' onClick={() => endpoint(`play ${window.chNumber}-${layerNumber} "${filename}"`)}> Play</button>
-                <button className='stopButton' onClick={() => endpoint(`pause ${window.chNumber}-${layerNumber}`)}>Pause</button>
-                <button className='stopButton' onClick={() => endpoint(`resume ${window.chNumber}-${layerNumber}`)}>Resume</button>
-                <button className='stopButton' onClick={() => endpoint(`stop ${window.chNumber}-${layerNumber}`)}>Stop</button>
+                <br /> <button className='palyButton' onClick={() => endpoint(`load ${1}-${layerNumber} "${filename}"`)}>Cue</button>
+                <button className='palyButton' onClick={() => endpoint(`play ${1}-${layerNumber} "${filename}"`)}> Play</button>
+                <button className='stopButton' onClick={() => endpoint(`pause ${1}-${layerNumber}`)}>Pause</button>
+                <button className='stopButton' onClick={() => endpoint(`resume ${1}-${layerNumber}`)}>Resume</button>
+                <button className='stopButton' onClick={() => endpoint(`stop ${1}-${layerNumber}`)}>Stop</button>
                 <button className='palyButton' onClick={() => {
-                    endpoint(`play ${window.chNumber}-${layerNumber} "${filename}" loop`);
+                    endpoint(`play ${1}-${layerNumber} "${filename}" loop`);
                     setPlaylistMode(false);
                 }}>Loop Play</button>
 
@@ -227,16 +228,16 @@ const VideoPlaylist = () => {
                                                                 }} key1={i} key2={'vimlesh'}  >{val.fileName}
                                                             </td>
                                                             <td><button key1={i} onClick={() => {
-                                                                endpoint(`load ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                endpoint(`load ${1}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
                                                                 setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
                                                             }} >Cue</button></td>
                                                             <td><button key1={i} onClick={() => {
-                                                                endpoint(`play ${window.chNumber}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                endpoint(`play ${1}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
                                                                 setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
                                                             }} ><FaPlay /></button></td>
-                                                            <td><button key1={i} onClick={() => endpoint(`Stop ${window.chNumber}-${layerNumber}`)} ><FaStop /></button></td>
+                                                            <td><button key1={i} onClick={() => endpoint(`Stop ${1}-${layerNumber}`)} ><FaStop /></button></td>
                                                             <td><button key1={i} onClick={(e) => deletePage(e)} ><VscTrash style={{ pointerEvents: 'none' }} /></button></td>
 
                                                         </tr>

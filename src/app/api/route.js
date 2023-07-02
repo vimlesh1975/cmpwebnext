@@ -1,17 +1,10 @@
 import { CasparCG, CasparCGSocket, Options, AMCP } from 'casparcg-connection';
 import dirTree from  "directory-tree";
 import { NextResponse } from 'next/server'
-
 var mediaPath = 'c:/casparcg/_media';
 var templatePath;
 var logPath;
-
 var media = [];
-// const ccgsocket = new CasparCGSocket('localhost', 3000)
-// ccgsocket.emit('FromAPI', 'ggggg')
-// ccgsocket.connect()
-// ccgsocket.emit('ddddddd')
-// console.log(ccgsocket)
 const refreshMedia = () => {
   aa.getCasparCGPaths().then((aa1) => {
       mediaPath = aa1.absoluteMedia;
@@ -19,10 +12,8 @@ const refreshMedia = () => {
       logPath = aa1.absoluteLog;
       media = []
       var tree = dirTree(mediaPath, {}, (item, PATH, stats) => {
-          // console.log(item.path, item.name)
-          // console.log(item)
           var itempath = (item.path).substring(mediaPath.length)
-          media.push(itempath)
+          media.push(itempath.replaceAll('\\', '/'))
       });
       console.log(media.length)
 
@@ -30,7 +21,7 @@ const refreshMedia = () => {
 }
 
 var aa;
-export const connect =  () => {
+ const connect =  () => {
   aa = new CasparCG("127.0.0.1", 5250)
   aa.queueMode = Options.QueueMode.SEQUENTIAL;
 
@@ -38,7 +29,9 @@ export const connect =  () => {
     console.log(aa.connected)
     // io.emit('connectionStatus', (aa.connected).toString())
   }
-
+aa.onDisconnected=()=>{
+  console.log('disconnected')
+}
   aa.onConnected = () => {
     refreshMedia()
     aa.getCasparCGVersion().then((aa1) => {
@@ -66,7 +59,12 @@ export async function POST(req, res) {
   const body = await req.json()
   console.log(body);
   if (body.action==='endpoint'){
+    if (!aa){
+      connect()
+    }
+ 
     aa.do(new AMCP.CustomCommand(body.command))
+  
     return new Response('')
   }
   if (body.action==='getmedia'){

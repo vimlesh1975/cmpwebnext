@@ -1,4 +1,4 @@
-import axios from 'axios';
+// import axios from 'axios';
 // console.log(fabric.util.)
 
 export const buildDate = '170423_1'
@@ -98,10 +98,10 @@ export const endpoint = async (str) => {
 //         return 'http://localhost:9000'
 //     }
 // }
-export const sendtohtml = (canvas, layerNumber) => {
-    axios.post(htmlAddress(), { data1: `<div id='divid_${layerNumber}'>${canvas.toSVG()}</div>`, clientId: window.clientId }).then((aa) => {
-    }).catch((aa) => { console.log('Error', aa) });
-}
+// export const sendtohtml = (canvas, layerNumber) => {
+//     axios.post(htmlAddress(), { data1: `<div id='divid_${layerNumber}'>${canvas.toSVG()}</div>`, clientId: window.clientId }).then((aa) => {
+//     }).catch((aa) => { console.log('Error', aa) });
+// }
 export const clearHtml = (layerNumber) => {
     // axios.post(htmlAddress(), { data1: '', clientId: window.clientId }).then((aa) => {
     // }).catch((aa) => { console.log('Error', aa) });
