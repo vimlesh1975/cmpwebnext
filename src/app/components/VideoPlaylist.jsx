@@ -78,14 +78,14 @@ const VideoPlaylist = () => {
         setLayerNumber(e.target.value);
     }
     const setfilenameAndCueonPreview = e => {
-        setfilename(((e.target.innerText).replaceAll('\\', '/')).split('.')[0]);
+        setfilename(((e.target.innerText)).split('.')[0]);
     }
     const scrub = val => {
         endpoint(`call 1-1 seek ${val}`)
     }
 
     const next = (command, newfile) => {
-        const newfilename = (playlist[newfile].fileName).replaceAll('\\', '/').split('.')[0];
+        const newfilename = (playlist[newfile].fileName).split('.')[0];
         setfilename(newfilename);
         dispatch({ type: 'CHANGE_CURRENT_FILE', payload: newfile });
         endpoint(`${command} 1-1 "${newfilename}"`)
@@ -120,7 +120,7 @@ const VideoPlaylist = () => {
     }, [oscMessage]);
 
     const filenamewithoutExtension = (filename) => {
-        return filename.replaceAll('\\', '/').split('.')[0]
+        return filename.split('.')[0]
     }
 
     const startPlaylist = () => {
@@ -228,14 +228,14 @@ const VideoPlaylist = () => {
                                                                 }} key1={i} key2={'vimlesh'}  >{val.fileName}
                                                             </td>
                                                             <td><button key1={i} onClick={() => {
-                                                                endpoint(`load ${1}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                endpoint(`load ${1}-${layerNumber} "${((val.fileName)).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
-                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
+                                                                setfilename((val.fileName).split('.')[0])
                                                             }} >Cue</button></td>
                                                             <td><button key1={i} onClick={() => {
-                                                                endpoint(`play ${1}-${layerNumber} "${((val.fileName).replaceAll('\\', '/')).split('.')[0]}"`);
+                                                                endpoint(`play ${1}-${layerNumber} "${((val.fileName)).split('.')[0]}"`);
                                                                 dispatch({ type: 'CHANGE_CURRENT_FILE', payload: i });
-                                                                setfilename((val.fileName).replaceAll('\\', '/').split('.')[0])
+                                                                setfilename((val.fileName).split('.')[0])
                                                             }} ><FaPlay /></button></td>
                                                             <td><button key1={i} onClick={() => endpoint(`Stop ${1}-${layerNumber}`)} ><FaStop /></button></td>
                                                             <td><button key1={i} onClick={(e) => deletePage(e)} ><VscTrash style={{ pointerEvents: 'none' }} /></button></td>
